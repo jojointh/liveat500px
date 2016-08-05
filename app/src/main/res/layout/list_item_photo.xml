@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ivImg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/mock" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#80000000"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed arcu et eros facilisis porttitor. Aenean quis libero at massa laoreet lobortis. Fusce sollicitudin augue in dolor pellentesque malesuada. Nam nec vehicula nibh, non volutpat est. Maecenas tellus libero, laoreet quis condimentum non, semper vel odio. Maecenas commodo libero libero, a viverra orci cursus eget. In varius quam diam, in dictum tortor tincidunt at. Nam volutpat tincidunt est, aliquam posuere turpis feugiat non. Nam id eros non ex varius ullamcorper."
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed arcu et eros facilisis porttitor. Aenean quis libero at massa laoreet lobortis. Fusce sollicitudin augue in dolor pellentesque malesuada. Nam nec vehicula nibh, non volutpat est. Maecenas tellus libero, laoreet quis condimentum non, semper vel odio. Maecenas commodo libero libero, a viverra orci cursus eget. In varius quam diam, in dictum tortor tincidunt at. Nam volutpat tincidunt est, aliquam posuere turpis feugiat non. Nam id eros non ex varius ullamcorper."
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+    </LinearLayout>
+</RelativeLayout>
