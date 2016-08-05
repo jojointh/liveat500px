@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.inthecheesefactory.thecheeselibrary.view.BaseCustomViewGroup;
 import com.inthecheesefactory.thecheeselibrary.view.state.BundleSavedState;
@@ -85,5 +86,18 @@ public class PhotoListItem extends BaseCustomViewGroup {
 
         Bundle bundle = ss.getBundle();
         // Restore State from bundle here
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = View.MeasureSpec.getSize(widthMeasureSpec);
+        int height = width * 2 / 3;
+        int newHeightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                height,
+                View.MeasureSpec.EXACTLY);
+        // Child Views
+        super.onMeasure(widthMeasureSpec, newHeightMeasureSpec);
+        // Self
+        setMeasuredDimension(width, height);
     }
 }
