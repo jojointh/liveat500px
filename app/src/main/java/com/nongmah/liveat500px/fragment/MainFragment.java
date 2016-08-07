@@ -14,7 +14,6 @@ import com.nongmah.liveat500px.R;
 import com.nongmah.liveat500px.adapter.PhotoListAdapter;
 import com.nongmah.liveat500px.dao.PhotoItemCollectionDao;
 import com.nongmah.liveat500px.manager.HttpManager;
-import com.nongmah.liveat500px.manager.PhotoListManager;
 
 import java.io.IOException;
 
@@ -62,7 +61,7 @@ public class MainFragment extends Fragment {
             public void onResponse(Call<PhotoItemCollectionDao> call, Response<PhotoItemCollectionDao> response) {
                 if (response.isSuccessful()) {
                     PhotoItemCollectionDao dao = response.body();
-                    PhotoListManager.getInstance().setDao(dao);
+                    listAdapter.setDao(dao);
                     listAdapter.notifyDataSetChanged();
                     Toast.makeText(Contextor.getInstance().getContext(), dao.getData().get(0).getCaption(), Toast.LENGTH_SHORT).show();
                 } else {
