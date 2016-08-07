@@ -7,7 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,6 +35,8 @@ public class MainFragment extends Fragment {
 
     ListView listView;
     PhotoListAdapter listAdapter;
+    Button btnNewPhotos;
+
     SwipeRefreshLayout swipeRefreshLayout;
 
     PhotoListManager photoListManager;
@@ -58,6 +63,15 @@ public class MainFragment extends Fragment {
     private void initInstances(View rootView) {
         // Init 'View' instance(s) with rootView.findViewById here
         photoListManager = new PhotoListManager();
+
+        btnNewPhotos = (Button) rootView.findViewById(R.id.btnNewPhotos);
+        btnNewPhotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listView.smoothScrollToPosition(0);
+                hideButtonNewPhotos();
+            }
+        });
 
         listView = (ListView) rootView.findViewById(R.id.listView);
         listAdapter = new PhotoListAdapter();
@@ -125,6 +139,8 @@ public class MainFragment extends Fragment {
                     int additionalSize = (dao != null && dao.getData() != null) ? dao.getData().size() : 0;
                     listAdapter.increaseLasePosition(additionalSize);
                     listView.setSelectionFromTop(firstVisiblePosition + additionalSize, top);
+                    if (additionalSize > 0)
+                        showButtonNewPhotos();
                 } else {
 
                 }
@@ -186,5 +202,17 @@ public class MainFragment extends Fragment {
         if (savedInstanceState != null) {
             // Restore Instance State here
         }
+    }
+
+    public void showButtonNewPhotos() {
+        btnNewPhotos.setVisibility(View.VISIBLE);
+        Animation anim = AnimationUtils.loadAnimation(Contextor.getInstance().getContext(), R.anim.zoom_fade_in);
+        btnNewPhotos.startAnimation(anim);
+    }
+
+    public void hideButtonNewPhotos() {
+        btnNewPhotos.setVisibility(View.GONE);
+        Animation anim = AnimationUtils.loadAnimation(Contextor.getInstance().getContext(), R.anim.zoom_fade_out);
+        btnNewPhotos.startAnimation(anim);
     }
 }
