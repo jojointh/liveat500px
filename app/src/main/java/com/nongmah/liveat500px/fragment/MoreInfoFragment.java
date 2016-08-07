@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.inthecheesefactory.thecheeselibrary.view.SlidingTabLayout;
 import com.nongmah.liveat500px.R;
 
 
@@ -18,6 +19,7 @@ import com.nongmah.liveat500px.R;
 public class MoreInfoFragment extends Fragment {
 
     ViewPager viewPager;
+    private SlidingTabLayout slidingTabLayout;
 
     public MoreInfoFragment() {
         super();
@@ -77,7 +79,24 @@ public class MoreInfoFragment extends Fragment {
             public int getCount() {
                 return 3;
             }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                switch (position) {
+                    case 0:
+                        return "Summary";
+                    case 1:
+                        return "Info";
+                    case 2:
+                        return "Tags";
+                    default:
+                        return "";
+                }
+            }
         });
+
+        slidingTabLayout = (SlidingTabLayout) rootView.findViewById(R.id.slidingTabLayout);
+        slidingTabLayout.setViewPager(viewPager);
     }
 
     @Override
