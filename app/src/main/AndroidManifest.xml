@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nongmah.liveat500px">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -17,8 +19,12 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.nongmah.liveat500px.configuration.GildeConfiguration"
+        <meta-data
+            android:name="com.nongmah.liveat500px.configuration.GildeConfiguration"
             android:value="GlideModule" />
+
+        <activity android:name=".activity.MoreInfoActivity"
+            android:theme="@style/AppThemeWithActionBar"></activity>
     </application>
 
 </manifest>
