@@ -101,8 +101,8 @@ public class MainFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
                 if (response.isSuccessful()) {
                     PhotoItemCollectionDao dao = response.body();
-                    photoListManager.setDao(dao);
-                    listAdapter.setDao(dao);
+                    photoListManager.insertDaoAtTopPosition(dao);
+                    listAdapter.setDao(photoListManager.getDao());
                     listAdapter.notifyDataSetChanged();
                     Toast.makeText(Contextor.getInstance().getContext(), "Load Completed", Toast.LENGTH_SHORT).show();
                 } else {
