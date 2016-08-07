@@ -2,10 +2,12 @@ package com.nongmah.liveat500px.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ public class MainFragment extends Fragment {
 
     ListView listView;
     PhotoListAdapter listAdapter;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public MainFragment() {
         super();
@@ -55,10 +58,34 @@ public class MainFragment extends Fragment {
         listAdapter = new PhotoListAdapter();
         listView.setAdapter(listAdapter);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadData();
+            }
+        });
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+                swipeRefreshLayout.setEnabled(i == 0);
+            }
+        });
+
+        reloadData();
+    }
+
+    private void reloadData() {
         Call<PhotoItemCollectionDao> call = HttpManager.getInstance().getService().loadPhotoList();
         call.enqueue(new Callback<PhotoItemCollectionDao>() {
             @Override
             public void onResponse(Call<PhotoItemCollectionDao> call, Response<PhotoItemCollectionDao> response) {
+                swipeRefreshLayout.setRefreshing(false);
                 if (response.isSuccessful()) {
                     PhotoItemCollectionDao dao = response.body();
                     listAdapter.setDao(dao);
@@ -77,6 +104,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onFailure(Call<PhotoItemCollectionDao> call, Throwable t) {
                 // Handle
+                swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(Contextor.getInstance().getContext(), t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
