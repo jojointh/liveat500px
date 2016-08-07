@@ -41,6 +41,8 @@ public class MainFragment extends Fragment {
 
     PhotoListManager photoListManager;
 
+    private boolean isLoadingMore;
+
     public MainFragment() {
         super();
     }
@@ -91,8 +93,17 @@ public class MainFragment extends Fragment {
             }
 
             @Override
-            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-                swipeRefreshLayout.setEnabled(i == 0);
+            public void onScroll(AbsListView absListView,
+                                 int firstVisibleItem,
+                                 int visibleItemCount,
+                                 int totalItemCount) {
+                swipeRefreshLayout.setEnabled(firstVisibleItem == 0);
+                if (firstVisibleItem + visibleItemCount >= totalItemCount) {
+                    if (photoListManager.getCount() > 0) {
+                        // Load More
+                        loadMoreData();
+                    }
+                }
             }
         });
 
@@ -110,6 +121,7 @@ public class MainFragment extends Fragment {
 
         public static final int MODE_RELOAD = 1;
         public static final int MODE_RELOAD_NEWER = 2;
+        public static final int MODE_LOAD_MORE = 3;
 
         int mode;
 
@@ -127,10 +139,16 @@ public class MainFragment extends Fragment {
                 View c = listView.getChildAt(0);
                 int top = c == null ? 0 : c.getTop();
 
-                if (mode == MODE_RELOAD_NEWER)
+                if (mode == MODE_RELOAD_NEWER) {
                     photoListManager.insertDaoAtTopPosition(dao);
-                else
+                }
+                else if (mode == MODE_LOAD_MORE) {
+                    photoListManager.appendDaoAtBottomPosition(dao);
+                    isLoadingMore = false;
+                }
+                else {
                     photoListManager.setDao(dao);
+                }
                 listAdapter.setDao(photoListManager.getDao());
                 listAdapter.notifyDataSetChanged();
 
@@ -147,6 +165,8 @@ public class MainFragment extends Fragment {
                 Toast.makeText(Contextor.getInstance().getContext(), "Load Completed", Toast.LENGTH_SHORT).show();
             } else {
                 // Handle
+                if (mode == MODE_LOAD_MORE)
+                    isLoadingMore = false;
                 try {
                     Toast.makeText(Contextor.getInstance().getContext(), response.errorBody().string(), Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
@@ -158,6 +178,8 @@ public class MainFragment extends Fragment {
         @Override
         public void onFailure(Call<PhotoItemCollectionDao> call, Throwable t) {
             // Handle
+            if (mode == MODE_LOAD_MORE)
+                isLoadingMore = false;
             swipeRefreshLayout.setRefreshing(false);
             Toast.makeText(Contextor.getInstance().getContext(), t.toString(), Toast.LENGTH_SHORT).show();
         }
@@ -172,6 +194,15 @@ public class MainFragment extends Fragment {
     private void reloadData() {
         Call<PhotoItemCollectionDao> call = HttpManager.getInstance().getService().loadPhotoList();
         call.enqueue(new PhotoListLoadCallback(PhotoListLoadCallback.MODE_RELOAD));
+    }
+
+    private void loadMoreData() {
+        if (isLoadingMore)
+            return;
+        isLoadingMore = true;
+        int maxId = photoListManager.getMinimumId();
+        Call<PhotoItemCollectionDao> call = HttpManager.getInstance().getService().loadPhotoListBeforeId(maxId);
+        call.enqueue(new PhotoListLoadCallback(PhotoListLoadCallback.MODE_LOAD_MORE));
     }
 
     @Override
