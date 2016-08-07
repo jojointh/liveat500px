@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nongmah.liveat500px.R;
@@ -28,10 +29,10 @@ public class PhotoListAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         if (dao == null)
-            return 0;
+            return 1;
         if (dao.getData() == null)
-            return 0;
-        return dao.getData().size();
+            return 1;
+        return dao.getData().size() + 1;
     }
 
     @Override
@@ -45,7 +46,26 @@ public class PhotoListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position == getCount() - 1 ? 1 : 0;
+    }
+
+    @Override
+    public View getView(int position, View view, ViewGroup viewGroup) {
+        if (position == getCount() - 1) {
+            // Progress Bar
+            ProgressBar item;
+            if (view != null)
+                item = (ProgressBar) view;
+            else
+                item = new ProgressBar(viewGroup.getContext());
+            return item;
+        }
         PhotoListItem item;
         if (view != null)
             item = (PhotoListItem) view;
@@ -53,15 +73,15 @@ public class PhotoListAdapter extends BaseAdapter {
             item = new PhotoListItem(viewGroup.getContext());
         }
 
-        PhotoItemDao dao = (PhotoItemDao) getItem(i);
+        PhotoItemDao dao = (PhotoItemDao) getItem(position);
         item.setNameText(dao.getCaption());
         item.setDescriptionText(dao.getUsername() + "\n" + dao.getCamera());
         item.setImageUrl(dao.getImageUrl());
 
-        if (i > lastPosition) {
+        if (position > lastPosition) {
             Animation anim = AnimationUtils.loadAnimation(viewGroup.getContext(), R.anim.up_from_bottom);
             item.startAnimation(anim);
-            lastPosition = i;
+            lastPosition = position;
         }
 
         return item;
