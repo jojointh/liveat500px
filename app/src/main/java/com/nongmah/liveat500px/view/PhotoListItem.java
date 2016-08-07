@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.inthecheesefactory.thecheeselibrary.view.BaseCustomViewGroup;
 import com.inthecheesefactory.thecheeselibrary.view.state.BundleSavedState;
 import com.nongmah.liveat500px.R;
@@ -118,7 +120,10 @@ public class PhotoListItem extends BaseCustomViewGroup {
         tvDescription.setText(text);
     }
 
-    public void setImageUrl(String text) {
-        // TODO: Load Image
+    public void setImageUrl(String url) {
+        Glide.with(getContext())
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(ivImg);
     }
 }
