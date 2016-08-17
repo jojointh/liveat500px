@@ -9,10 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import com.nongmah.liveat500px.R;
 import com.nongmah.liveat500px.dao.PhotoItemDao;
 import com.nongmah.liveat500px.fragment.MainFragment;
+import com.nongmah.liveat500px.fragment.MoreInfoFragment;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.FragmentListener {
 
@@ -70,8 +72,18 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Frag
 
     @Override
     public void onPhotoItemClicked(PhotoItemDao dao) {
-        Intent intent = new Intent(MainActivity.this, MoreInfoActivity.class);
-        intent.putExtra("dao", dao);
-        startActivity(intent);
+        FrameLayout moreInfoContainer = (FrameLayout)
+                findViewById(R.id.moreInfoContainer);
+        if (moreInfoContainer == null) {
+            //Mobile
+            Intent intent = new Intent(MainActivity.this, MoreInfoActivity.class);
+            intent.putExtra("dao", dao);
+            startActivity(intent);
+        } else {
+            //Tablet
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.moreInfoContainer, MoreInfoFragment.newInstance(dao))
+                    .commit();
+        }
     }
 }
